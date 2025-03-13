@@ -1,22 +1,16 @@
-import math
 import random
 
+cantidad = int(input("Ingrese la cantidad de números para confirmar: "))
 
-n= int(input("ingrese la cantidad de numeros a validar:"))
-while n<=0:
-    print("El numero debe ser positivo")
-    n= int(input("ingrese la cantidad de numeros a validar "))
+numeros = [random.randint(1, 100) for _ in range(cantidad)]  # Generar números aleatorios positivos
+print("Números generados:", ", ".join(map(str, numeros)))
 
-n_azar = map(int(random(n_azar)))
-for i in range(n):
-    n_azar = reduce(n_azar)
-    mcm = list(map(int(n_azar)))
-    if mcm % 2 != 0:
-        print(f"el numero es inteligente: {mcm}")
-        print(mcm)
+for n in numeros:
+    factores = [i for i in range(1, n + 1) if n % i == 0]  # Obtener factores del número
+    if len(factores) % 2 == 1:
+        print("Sí")
     else:
-        print("El numero no es inteligente: {mcm}")
-        print(mcm)    
+        print("No")
 
         
 
