@@ -3,7 +3,7 @@ USE electrimax;
 CREATE TABLE Proveedores (
     ProveedorID INT auto_increment PRIMARY KEY,
     Nombre varchar(100) not null,
-	Telefono varchar(20),
+    Telefono varchar(20),
     CorreoElectronico varchar(50),
     Direccion TEXT
 );
