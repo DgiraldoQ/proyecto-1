@@ -1,4 +1,4 @@
--- Taller N2 de estadistica
+-- Taller N2 de bases de datos
 USE electrimax;
 CREATE TABLE Proveedores (
     ProveedorID INT auto_increment PRIMARY KEY,
