@@ -1,4 +1,7 @@
-USE electrimax;
+CREATE DATABASE ElectriMax;
+
+USE ElectriMax;
+
 CREATE TABLE Proveedores (
     ProveedorID INT auto_increment PRIMARY KEY,
     Nombre varchar(100) not null,
