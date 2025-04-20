@@ -34,6 +34,7 @@ CREATE TABLE DetalleVenta (
     SubTotal DECIMAL(10, 2),
     FOREIGN KEY (VentaID) REFERENCES Ventas(VentaID),
     FOREIGN KEY (ProductoID) REFERENCES Productos(ProductoID)
+    FOREIGN KEY (ProveedorID) REFERENCES Proveedor(ProveedorID)
     );
 
 INSERT INTO Proveedores (Nombre, Telefono, CorreoElectronico, Direccion)
@@ -108,6 +109,114 @@ VALUES
 (12, 7, 3, 450.00),
 (13, 8, 2, 800.00);
 
+-- consultas para realizar en nuestra tabla de datos:
 
+-- listar todos los productos disponibles con su cantidad de stock
+select nombre, cantidadstock
+from productos;
 
+-- Mostrar los productos con bajo stock menores a 5
+select nombre, cantidadstock
+from productos
+where cantidadstock <= 5;
 
+-- consultar todas las ventas realizadas en un periodo de tiempo
+select *
+from ventas
+where fecha between "2025-04-01" and "2025-04-30";
+
+-- obtener los productos suministrados por un proveedor especifico EJEMPLO SAMSUNG
+select p.nombre
+from productos p
+join proveedores pr on p.proveedorid = pr.proveedorid
+where pr.nombre = "samsung";
+
+-- ver el total de ventas generadas en un mes
+select v.ventaid, v.clientenombre, sum(dv.cantidad * p.precio) as Total_Venta
+from ventas v
+join detalleventa dv on v.ventaid = dv.ventaid
+join productos p on dv.productoid = p.productoid
+where month (v.fecha) = 4 and year (v.fecha) = 2025
+group by v.ventaid;
+
+-- mostrar los productos vendidos en una venta especifica EJEMPLO: ID 101
+select p.nombre, dv.cantidad
+from detalleventa dv
+join productos p on dv.productoid = p.productoid
+where dv.detalleid = 1;
+
+-- clientes que han comprado productos en una categoria especifica EJEMPLO:LAPTOPS
+select distinct v.clientenombre
+from ventas v 
+join detalleventa dv on v.ventaid = dv.ventaid
+join productos p on dv.productoid = p.productoid
+where p.categoria = "Laptops";
+
+-- productos mas vendido (nombre,  cantidad, total vendido)
+select p.nombre, sum(dv.cantidad) as total_vendido
+from detalleventa dv
+join productos p on dv.productoid = p.productoid
+group by p.nombre
+order by total_vendido desc;
+
+-- nombre y total gastado por cada cliente
+select v.clientenombre, sum(dv.cantidad * p.precio) as total_gastado
+from ventas v 
+join detalleventa dv on dv.ventaid = v.ventaid
+join productos p on dv.productoid = p.productoid
+group by v.clientenombre;
+
+-- categoria de productos vendidos mas de 10 veces
+select p.categoria, sum(dv.cantidad) as total
+from detalleventa dv
+join productos p on dv.productoid = p.productoid
+group by p.categoria
+having total >= 10;
+
+-- proveedor con mayor volumen de ventas
+select pr.nombre, sum(dv.cantidad  * p.precio) as proveedor_mayor_ventas
+from detalleventa dv
+join productos p on dv.productoid = p.productoid
+join proveedores pr on dv.proveedorid = pr.proveedorid
+group by pr.nombre 
+order by proveedor_mayor_ventas;
+
+-- productos con precio mayor al promedio
+select nombre, precio
+from productos
+where precio > (select avg(precio) from productos);
+
+-- ventas con mas de 3 productos distintos
+select ventaid
+from detalleventa
+group by ventaid
+having count(distinct productoid)>1;
+
+-- productos que nunca se han vendido
+
+select nombre
+from productos
+where productoid not in(select distinct productoid from detalleventa);
+
+-- clientes que han comprado productos de mas de una categoria
+select v.clientenombre
+from ventas v
+join detalleventa dv on dv.ventaid = v.ventaid
+join productos p on dv.productoid = p.productoid
+group by v.clientenombre
+having count(p.categoria)>1;
+
+-- producto mas caro comparado en cada venta
+select v.ventaid, v.clientenombre, max(p.precio)
+from ventas v
+join detalleventa dv on dv.ventaid = v.ventaid
+join productos p on dv.productoid = p.productoid
+group by v.ventaid;
+
+-- clientes que compraron productos de proveedor logitech
+select distinct v.clientenombre
+from ventas v
+join detalleventa dv on v.ventaid = dv.ventaid
+join productos p on dv.productoid = p.productoid
+join proveedores pr on p.proveedorid = pr.proveedorid
+where pr.nombre = "Logitech";
