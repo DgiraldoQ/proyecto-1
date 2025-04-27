@@ -1,0 +1,95 @@
+CREATE DATABASE SistemaContable; 
+
+USE SistemaContable; 
+
+-- Tabla: Usuario 
+
+CREATE TABLE Usuario ( 
+
+    idUsuario INT AUTO_INCREMENT PRIMARY KEY, 
+
+    nombre VARCHAR(100) NOT NULL, 
+
+    correoElectronico VARCHAR(100) NOT NULL UNIQUE, 
+
+    contraseña VARCHAR(255) NOT NULL, 
+
+    rol ENUM('GestorEmpresarial', 'Contador', 'Administrador') NOT NULL 
+
+); 
+
+  
+-- Tabla: Cuenta 
+
+  
+CREATE TABLE Cuenta ( 
+
+    idCuenta INT AUTO_INCREMENT PRIMARY KEY, 
+
+    titular VARCHAR(100) NOT NULL, 
+
+    saldo FLOAT NOT NULL, 
+
+    idUsuario INT NOT NULL, 
+
+    FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario) 
+
+); 
+
+  
+-- Tabla: CuentaPersonal 
+
+CREATE TABLE CuentaPersonal ( 
+
+    idCuenta INT PRIMARY KEY, 
+
+    nombreEmprendimiento VARCHAR(100), 
+
+    ingresosTotales FLOAT, 
+
+    tasaImpuesto FLOAT, 
+
+    FOREIGN KEY (idCuenta) REFERENCES Cuenta(idCuenta) 
+
+); 
+
+
+-- Tabla: CuentaEmpresarial 
+
+CREATE TABLE CuentaEmpresarial ( 
+
+    idCuenta INT PRIMARY KEY, 
+
+    nombreEmpresa VARCHAR(100), 
+
+    ingresosAnuales FLOAT, 
+
+    gastosAnuales FLOAT, 
+
+    tasaIVA FLOAT, 
+
+    FOREIGN KEY (idCuenta) REFERENCES Cuenta(idCuenta) 
+
+); 
+
+  
+-- Tabla: Empleado 
+
+  
+CREATE TABLE Empleado ( 
+
+    idEmpleado INT AUTO_INCREMENT PRIMARY KEY, 
+
+    nombre VARCHAR(100) NOT NULL, 
+
+    apellido VARCHAR(100) NOT NULL, 
+
+    salario FLOAT NOT NULL, 
+
+    estadoContrato VARCHAR(50) NOT NULL, 
+
+    idCuenta INT NOT NULL, 
+
+    FOREIGN KEY (idCuenta) REFERENCES CuentaEmpresarial(idCuenta) 
+
+); 
